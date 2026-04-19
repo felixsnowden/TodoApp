@@ -57,11 +57,11 @@ namespace TodoApp.Tasks
                 Console.WriteLine("No tasks!"); return; 
             }
 
-            var sorted = getSorted(); // ← використовуємо getSorted
+            var sorted = getSorted();
             for (int i = 0; i < sorted.Count; i++)
             {
                 var task = sorted[i];
-                string status = task.IsCompleted ? "[✓]" : "[ ]";
+                string status = task.IsCompleted ? "[X]" : "[ ]";
                 Console.WriteLine($"{i + 1}. {status} | {task.TaskPriority} | {task.Title} | Deadline: {task.Deadline:dd.MM.yyyy}");
             }
         }
@@ -105,7 +105,7 @@ namespace TodoApp.Tasks
         }
         public static void completeTask() 
         {
-            var sorted = getSorted(); // ← той самий порядок
+            var sorted = getSorted();
             showAll();
             var notCompleted = sorted.Where(t => !t.IsCompleted).ToList();
 
@@ -129,7 +129,6 @@ namespace TodoApp.Tasks
                     continue;
                 }
 
-                // І перевіряй чи задача вже виконана
                 if (sorted[taskNumber - 1].IsCompleted)
                 {
                     Console.WriteLine("Task already completed!");
@@ -137,7 +136,7 @@ namespace TodoApp.Tasks
                 }
 
                 sorted[taskNumber - 1].IsCompleted = true;
-                Console.WriteLine("Task completed! ✅");
+                Console.WriteLine("Task completed!");
                 return;
             }
         }
@@ -160,7 +159,7 @@ namespace TodoApp.Tasks
                     continue;
                 }
 
-                todos.Remove(sorted[taskNumber - 1]); // видаляємо об'єкт
+                todos.Remove(sorted[taskNumber - 1]);
                 Console.WriteLine("Task deleted!");
                 return;
             }
@@ -178,12 +177,11 @@ namespace TodoApp.Tasks
                         Deadline = t.Deadline,
                         CreatedAt = t.CreatedAt,
                         TaskPriority = t.TaskPriority.ToString(),
-                        // допиши решту властивостей
                     }).ToList();
 
                 string json = JsonSerializer.Serialize(dataList);
                 File.WriteAllText(FilePath, json);
-                Console.WriteLine("Saved! ✅");
+                Console.WriteLine("Saved!");
             }
             catch (Exception ex)
             {
@@ -195,7 +193,7 @@ namespace TodoApp.Tasks
             try
             {
                 if (!File.Exists(FilePath))
-                    return; // файлу нема — нічого не робимо
+                    return;
 
                 string json = File.ReadAllText(FilePath);
                 List<TodoData> dataList = JsonSerializer.Deserialize<List<TodoData>>(json);
@@ -203,11 +201,11 @@ namespace TodoApp.Tasks
                 todos = dataList.Select(d => new TodoItem(
                     d.Title,
                     d.Deadline,
-                    Enum.Parse<TodoItem.Priority>(d.TaskPriority) // string → enum
+                    Enum.Parse<TodoItem.Priority>(d.TaskPriority)
                 )
                 {
-                    IsCompleted = d.IsCompleted,  // ці властивості
-                    CreatedAt = d.CreatedAt       // встановлюємо окремо
+                    IsCompleted = d.IsCompleted,
+                    CreatedAt = d.CreatedAt 
                 }).ToList();
             }
             catch (Exception ex)
